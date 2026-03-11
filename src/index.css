@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'DM Serif Display', serif;
+  --font-sans: 'Space Grotesk', sans-serif;
+  --color-paper: #fffdf6;
+  --color-ink: #1d242f;
+  --color-accent: #ff7a3d;
+  --color-highlight: #ffe2a8;
+  --color-muted: #738099;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--color-ink);
+  background:
+    radial-gradient(circle at 20% 10%, #ffeec8 0%, transparent 45%),
+    radial-gradient(circle at 80% 0%, #d2f1f4 0%, transparent 38%),
+    linear-gradient(160deg, #fff7e9 0%, #f4f7ff 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.cornell-actions {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .cornell-sheet {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .cornell-grid textarea {
+    border-color: #b7b7b7 !important;
+    background: #ffffff !important;
+    min-height: 120mm;
+  }
+
+  .cornell-grid > div:last-child textarea {
+    min-height: 35mm;
+  }
+}
