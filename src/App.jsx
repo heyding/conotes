@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { appConfig, translations } from './i18n/translations'
 
 const STORAGE_KEY = 'conotes:note:v1'
@@ -117,54 +117,6 @@ function App() {
     return () => clearTimeout(timer)
   }, [statusMessage])
 
-  useEffect(() => {
-    const onKeyDown = async (event) => {
-      const key = event.key.toLowerCase()
-      const isModifierPressed = event.metaKey || event.ctrlKey
-
-      if (isModifierPressed && event.shiftKey && key === 'f') {
-        event.preventDefault()
-        setFocusMode((current) => !current)
-        return
-      }
-
-      if (isModifierPressed && key === 's') {
-        event.preventDefault()
-        saveToLocalStorage()
-        return
-      }
-
-      if (isModifierPressed && event.shiftKey && key === 'm') {
-        event.preventDefault()
-        saveToLocalStorage()
-        exportMarkdown()
-        return
-      }
-
-      if (isModifierPressed && event.shiftKey && key === 'p') {
-        event.preventDefault()
-        saveToLocalStorage()
-        await exportPdf()
-        return
-      }
-
-      if (isModifierPressed && key === 'p') {
-        event.preventDefault()
-        if (!focusMode) {
-          printCornell()
-        }
-        return
-      }
-
-      if (event.key === 'Escape') {
-        setFocusMode(false)
-      }
-    }
-
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [focusMode, saveToLocalStorage, exportMarkdown, exportPdf, printCornell])
-
   function onFieldChange(field) {
     return (event) => {
       const value = event.target.value
@@ -172,11 +124,11 @@ function App() {
     }
   }
 
-  function saveToLocalStorage() {
+  const saveToLocalStorage = useCallback(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(note))
     setLastSavedAt(new Date())
     setStatusMessage(text.status.saved)
-  }
+  }, [note, text.status.saved])
 
   function clearAll() {
     setNote(initialNote)
@@ -185,7 +137,7 @@ function App() {
     setStatusMessage(text.status.reset)
   }
 
-  function exportMarkdown() {
+  const exportMarkdown = useCallback(() => {
     const markdown = toMarkdown(note, text)
     const filename = buildDocumentFilename(note, text)
     const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' })
@@ -195,9 +147,9 @@ function App() {
     link.click()
     URL.revokeObjectURL(link.href)
     setStatusMessage(text.status.markdownExported)
-  }
+  }, [note, text])
 
-  async function exportPdf() {
+  const exportPdf = useCallback(async () => {
     const { jsPDF } = await import('jspdf')
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
     const left = 14
@@ -247,14 +199,60 @@ function App() {
     const filename = buildDocumentFilename(note, text)
     doc.save(`${filename}.pdf`)
     setStatusMessage(text.status.pdfExported)
-  }
+  }, [note, text])
 
-  function printCornell() {
+  const printCornell = useCallback(() => {
     saveToLocalStorage()
     window.print()
-  }
+  }, [saveToLocalStorage])
 
+  useEffect(() => {
+    const onKeyDown = async (event) => {
+      const key = event.key.toLowerCase()
+      const isModifierPressed = event.metaKey || event.ctrlKey
 
+      if (isModifierPressed && event.shiftKey && key === 'f') {
+        event.preventDefault()
+        setFocusMode((current) => !current)
+        return
+      }
+
+      if (isModifierPressed && key === 's') {
+        event.preventDefault()
+        saveToLocalStorage()
+        return
+      }
+
+      if (isModifierPressed && event.shiftKey && key === 'm') {
+        event.preventDefault()
+        saveToLocalStorage()
+        exportMarkdown()
+        return
+      }
+
+      if (isModifierPressed && event.shiftKey && key === 'p') {
+        event.preventDefault()
+        saveToLocalStorage()
+        await exportPdf()
+        return
+      }
+
+      if (isModifierPressed && key === 'p') {
+        event.preventDefault()
+        if (!focusMode) {
+          printCornell()
+        }
+        return
+      }
+
+      if (event.key === 'Escape') {
+        setFocusMode(false)
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [focusMode, saveToLocalStorage, exportMarkdown, exportPdf, printCornell])
 
   const saveLabel = useMemo(() => {
     if (!lastSavedAt) {
