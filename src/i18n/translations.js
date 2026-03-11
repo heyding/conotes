@@ -1,5 +1,5 @@
 export const appConfig = {
-  defaultLocale: 'de',
+  defaultLocale: 'en',
 }
 
 export const translations = {
