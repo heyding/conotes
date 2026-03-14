@@ -4,7 +4,7 @@ conotes is a mobile-first Cornell Notes web app. It helps you structure notes, k
 
 ## Demo
 
-- Live demo / project page: [https://github.com/heyding/conotes](https://github.com/heyding/conotes)
+- Live demo / project page: [https://heyding.github.io/conotes/](https://heyding.github.io/conotes/)
 
 ## Tech
 
