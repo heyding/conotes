@@ -2,6 +2,10 @@
 
 conotes is a mobile-first Cornell Notes web app. It helps you structure notes, keep them in local storage, and export them as Markdown or PDF.
 
+## Demo
+
+- Live demo / project page: [https://github.com/heyding/conotes](https://github.com/heyding/conotes)
+
 ## Tech
 
 - React + Vite
@@ -9,12 +13,12 @@ conotes is a mobile-first Cornell Notes web app. It helps you structure notes, k
 
 ## Run locally
 
-1. npm install
-2. npm run dev
+1. `npm install`
+2. `npm run dev`
 
 ## Build
 
-1. npm run build
+1. `npm run build`
 
 ## Deploy
 
